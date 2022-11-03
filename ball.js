@@ -3,8 +3,13 @@ const player1Platform = document.querySelector('.plate1')
 const player2Platform = document.querySelector('.plate2')
 
 const browseWidth = window.innerWidth;
+const browseHeight = window.innerHeight;
 
-
+const posPlate1 = window.getComputedStyle(player1Platform, Number).top;
+const posPlate2 = window.getComputedStyle(player1Platform, Number).top;
+const posBall = window.getComputedStyle(ball, Number).left;
+const posBallTop = window.getComputedStyle(ball, Number).top;
+ 
 
 // console.log(leftBallPosition);
 // console.log(rightBallPosition);
@@ -12,140 +17,112 @@ const browseWidth = window.innerWidth;
 // ball.style.left = "100px"
 
 let delta = 1;
-let  range = 10;
+let range = 10;
+var random = getRandom(1,4);
+var randomTop = getRandomTopPar(1, 10)*10;
 
-
-
-
-//let player1PlatformPosition = player1Platform.getBoundingClientRect();
-//let topPlatform1Position = player1PlatformPosition.y;
-//let botPlatform1Position = player1PlatformPosition.y + player1PlatformPosition.height;
-
-//let player2PlatformPosition = player2Platform.getBoundingClientRect();
-//let topPlatform2Position = player2PlatformPosition.y;
-//let botPlatform2Position = player2PlatformPosition.y + player2PlatformPosition.height;
-//let currentTop1 = parseInt(player1Platform.style.top  ? player1Platform.style.top : 0);
-//let currentTop2 = parseInt(player2Platform.style.top  ? player2Platform.style.top : 0);
-
-//console.log(topPlatform1Position, topPlatform2Position);
-//console.log(botPlatform1Position, botPlatform2Position);
-
-//player1Platform.style.top = currentTop1 + 100 + 'px';
-//player2Platform.style.top = currentTop2 + 100 + 'px';
-//player1PlatformPosition.y = '100px';
-
-
-
-
-//document.addEventListener('keydown', function(evt){
-//    if (evt.which === 87) {
-//        player1Platform.style.top = currentTop1 - range + 'px';
-//    }
-
-//    if (evt.which === 83) {
-//        player1Platform.style.top = currentTop1 + range + 'px';
-//    }
-//}, true)
-
-
-
-
-//document.addEventListener('keydown', function(evt){
-//    if (evt.which === 38) {
-//        player2Platform.style.top = currentTop2 - range + 'px';
-//    }
-
-//    if (evt.which === 40) {
-//        player2Platform.style.top = currentTop2 + range + 'px';
-//    }
-//})
-
-//console.log(topPlatform1Position, topPlatform2Position);
-//console.log(botPlatform1Position, botPlatform2Position);
 
 function moveBall() {
     let ballPosition = ball.getBoundingClientRect();
     let leftBallPosition = ballPosition.x;
     let rightBallPosition = ballPosition.x + ballPosition.width;
-    const currentLeft = parseInt(ball.style.left  ? ball.style.left : 0);
-    let player1PlatformPosition = player1Platform.getBoundingClientRect();
-    let topPlatform1Position = player1PlatformPosition.y;
-    let botPlatform1Position = player1PlatformPosition.y + player1PlatformPosition.height;
+    let topBallPosition = ballPosition.y;
+    let botBallPosition = ballPosition.y + ballPosition.height;
 
-    let player2PlatformPosition = player2Platform.getBoundingClientRect();
-    let topPlatform2Position = player2PlatformPosition.y;
-    let botPlatform2Position = player2PlatformPosition.y + player2PlatformPosition.height;
-    let currentTop1 = parseInt(player1Platform.style.top  ? player1Platform.style.top : 0);
-    let currentTop2 = parseInt(player2Platform.style.top  ? player2Platform.style.top : 0);
-  
+    const currentLeft = parseInt(ball.style.left  ? ball.style.left : posBall);
+    const currentTop = parseInt(ball.style.top  ? ball.style.top : posBallTop);
+    
+    //console.log(currentTop);
+    
+    if (random === 2 || random === 4) {
+        if (rightBallPosition >= browseWidth || leftBallPosition < 0 ) 
+            delta = -delta;
+                 
+     
+    
+        ball.style.left = currentLeft + delta + 'px';
+    } else {if (rightBallPosition >= browseWidth || leftBallPosition < 0 ) 
+                 delta = -delta; 
 
-    if (rightBallPosition >= browseWidth || leftBallPosition < 0 ) 
-        delta = -delta;
- 
+        ball.style.left = currentLeft - delta + 'px';
+     }
 
-    ball.style.left = currentLeft + delta + 'px';
+    if (random === 1 || random === 2) {
+        if (topBallPosition > 0 || botBallPosition <= browseHeight ) 
+            randomTop = -randomTop;
+    
+    
+        ball.style.top = currentTop - randomTop + 'px';
+    } else {if (topBallPosition > 0 || botBallPosition <= browseHeight ) 
+                randomTop = -randomTop;
 
 
-    document.addEventListener('keydown', function(evt){
-        if (evt.which === 87) {
-            player1Platform.style.top = currentTop1 - range + 'px';
-        }
-    
-        if (evt.which === 83) {
-            player1Platform.style.top = currentTop1 + range + 'px';
-        }
-    }, true)
-    
-    
-    
-    
-    document.addEventListener('keydown', function(evt){
-        if (evt.which === 38) {
-            player2Platform.style.top = currentTop2 - range + 'px';
-        }
-    
-        if (evt.which === 40) {
-            player2Platform.style.top = currentTop2 + range + 'px';
-        }
-    })
+        ball.style.top = currentTop + randomTop + 'px';
+    }
     
 }
 
-var handle = setInterval(moveBall, 1);
 
-//function player1Moves() {
-//    let player1PlatformPosition = player1Platform.getBoundingClientRect();
-//    let topPlatform1Position = player1PlatformPosition.y;
-//    let botPlatform1Position = player1PlatformPosition.y + player1PlatformPosition.height;
-//    player1Platform.addEventListener('keydown', function(evt){
-//        if (evt.keyCode === 87) {
-//            player1Platform.style.top = parseInt(player1Platform.style.top  ? player1Platform.style.top : 0) + 1 +'px';
-//        }
+function movePlate1() {
+    let player1PlatformPosition = player1Platform.getBoundingClientRect();
+    let topPlatform1Position = player1PlatformPosition.y;
+    let botPlatform1Position = topPlatform1Position + player1PlatformPosition.height;
+    
+    let currentTop1 = parseInt(player1Platform.style.top  ? player1Platform.style.top : posPlate1);
+    
+    if (topPlatform1Position > 0 || botPlatform1Position < browseHeight) {
+        document.addEventListener('keydown', function(evt){
+            if (evt.which === 87) {
+                player1Platform.style.top = currentTop1 - range + 'px';
+            }
+        
+            if (evt.which === 83) {
+                player1Platform.style.top = currentTop1 + range + 'px';
+            }
+        }) 
+    } else player1Platform.style.top = 'static';
+    
+    //console.log(topPlatform1Position, botPlatform1Position);
+}
 
-//        if (evt.keyCode === 83) {
-//            player1Platform.style.top = parseInt(player1Platform.style.top  ? player1Platform.style.top : 0) - 1 +'px';
-//        }
-//    })
-//    console.log(topPlatform1Position);
-//};
+function movePlate2() {
+    let player2PlatformPosition = player2Platform.getBoundingClientRect();
+    let topPlatform2Position = player2PlatformPosition.y;
+    let botPlatform2Position = player2PlatformPosition.y + player2PlatformPosition.height;
+    let currentTop2 = parseInt(player2Platform.style.top  ? player2Platform.style.top : posPlate2);
 
-//function player2Moves() {
-//    let player2PlatformPosition = player2Platform.getBoundingClientRect();
-//    let topPlatform2Position = player2PlatformPosition.y;
-//    let botPlatform2Position = player2PlatformPosition.y + player2PlatformPosition.height;
-//    player2Platform.addEventListener('keydown', function(evt){
-//        if (evt.keyCode === 87) {
-//            player2Platform.style.top = parseInt(player2Platform.style.top  ? player2Platform.style.top : 0) + 1 +'px';
-//        }
+    if (topPlatform2Position > 0 || botPlatform2Position < browseHeight) {
+        document.addEventListener('keydown', function(evt){
+            if (evt.which === 38) {
+                player2Platform.style.top = currentTop2 - range + 'px';
+            }
+        
+            if (evt.which === 40) {
+                player2Platform.style.top = currentTop2 + range + 'px';
+            }
+        })
+    } else player2Platform.style.top = 'static';
 
-//        if (evt.keyCode === 83) {
-//            player2Platform.style.top = parseInt(player2Platform.style.top  ? player2Platform.style.top : 0) - 1 +'px';
-//        }
-//    })
-//    console.log(topPlatform2Position);
-//};
+    //console.log(topPlatform2Position, botPlatform2Position);
+}
 
+var plate1Interval = setInterval(movePlate1, .01);
+var plate2Interval = setInterval(movePlate2, .01);
+var ballInterval = setInterval(moveBall, .1);
 
-//player1Moves();
-//player1Moves();
+function getRandom(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
+function getRandomTopPar(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+console.log(random);
+console.log(randomTop);
+
+console.log(browseHeight, browseWidth);
