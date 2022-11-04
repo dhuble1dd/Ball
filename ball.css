@@ -19,7 +19,7 @@
 .plate1 {
     position: absolute;
     width: 10px;
-    height: 100px;
+    height: 200px;
     background: black;
     top: 50%;
 }
@@ -27,7 +27,7 @@
 .plate2 {
     position: absolute;
     width: 10px;
-    height: 100px;
+    height: 200px;
     background: black;
     right: 0;
     top: 50%;
