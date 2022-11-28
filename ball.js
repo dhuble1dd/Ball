@@ -11,13 +11,13 @@ const posBall = window.getComputedStyle(ball, Number).left;
 const posBallTop = window.getComputedStyle(ball, Number).top;
 
 let delta = 1;
-let range = 15;
+let range = 30;
 var random = getRandom(1,4);
 var randomTop = 2;
 
 document.addEventListener('keydown', function(evt){
-    let currentTop1 = movePlate(player1Platform);
-    let currentTop2 = movePlate(player2Platform);
+    let currentTop1 = drawPlate(player1Platform);
+    let currentTop2 = drawPlate(player2Platform);
 
     if(evt.code === 'KeyW'){
         player1Platform.style.top = currentTop1 - range + 'px';
@@ -36,7 +36,32 @@ document.addEventListener('keydown', function(evt){
     }
 });
 
-function movePlate(plate) {
+//let currentTop1 = setInterval(drawPlate(player1Platform), 1);
+//let currentTop2 = setInterval(drawPlate(player2Platform), 1);
+//let currentTop1 = drawPlate(player1Platform);
+//let currentTop2 = drawPlate(player2Platform);
+
+//console.log(currentTop1, currentTop2)
+
+//function movePlate(plate, cur, key1, key2) {
+//    document.addEventListener('keydown', function(evt) {
+//        if (evt.code === key1) {
+//            plate.style.top = cur - range + 'px';
+//        }
+
+//        if (evt.code === key2) {
+//            plate.style.top = cur - range + 'px';
+//        }
+//    });
+//    return [plate, cur, key1, key2]
+//}
+
+//let p1 = movePlate(player1Platform, currentTop1, 'KeyW', 'KeyS');
+//let p2 = movePlate(player2Platform, currentTop2, 'ArrowUp', 'ArrowDown');
+
+//console.log(p1, p2);
+
+function drawPlate(plate) {
    const platePosition = plate.getBoundingClientRect();
    const posPlate = window.getComputedStyle(plate, Number).top;
    let topPlatePosition = platePosition.y;
@@ -46,22 +71,22 @@ function movePlate(plate) {
 //    return;
 //   }
     if (topPlatePosition <= 0) {
-        currentTop = 0;
-    } else if (topPlatePosition > browseHeight - platePosition.height)
-            currentTop = browseHeight - platePosition.height;
+        currentTop = 0 + range;
+    } else if (botPlatePosition >= browseHeight)
+            currentTop = browseHeight - platePosition.height - range;
 
    return currentTop;
 }
 
 function moveBall() {
-    ballPosition = ball.getBoundingClientRect();
-    leftBallPosition = ballPosition.x;
-    rightBallPosition = ballPosition.x + ballPosition.width;
-    topBallPosition = ballPosition.y;
-    botBallPosition = ballPosition.y + ballPosition.height;
+    const ballPosition = ball.getBoundingClientRect();
+    let leftBallPosition = ballPosition.x;
+    let rightBallPosition = ballPosition.x + ballPosition.width;
+    let topBallPosition = ballPosition.y;
+    let botBallPosition = ballPosition.y + ballPosition.height;
    
-    player1PlatformPosition = player1Platform.getBoundingClientRect();
-    player2PlatformPosition = player2Platform.getBoundingClientRect();
+    const player1PlatformPosition = player1Platform.getBoundingClientRect();
+    const player2PlatformPosition = player2Platform.getBoundingClientRect();
 
     ring = {
         x : leftBallPosition, 
@@ -70,7 +95,7 @@ function moveBall() {
         h : ballPosition.height 
     }
    
-     platform1 = {
+    platform1 = {
         x : player1PlatformPosition.x, 
         y : player1PlatformPosition.y, 
         w : player1PlatformPosition.width,
