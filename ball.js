@@ -241,7 +241,7 @@ function moveBall() {
     //}
    
     if (ballLeft < 0 || ballRight > browseWidth ) {
-        setTimeout(backToWork, 1000)
+        backToWork();
     }
 }
 
@@ -264,5 +264,6 @@ function backToWork() {
     ball.style.left = browseWidth/2  - 50 + 'px';
     ball.style.top = browseHeight/2  - 50 + 'px';
     random = getRandom(1,4);
+    alert('Продолжим?')
 }
 
