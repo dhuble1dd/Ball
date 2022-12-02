@@ -13,7 +13,7 @@ const posBallTop = window.getComputedStyle(ball, Number).top;
 let delta = 1;
 let range = 30;
 let random = getRandom(1,4);
-let randomTop = 2;
+let gamma = 2;
 
 class DrawObject {
     constructor(element){
@@ -184,31 +184,32 @@ function moveBall() {
                 delta = -delta;
 
     if (ballTop < 0 || ballBottom >= browseHeight ) 
-            randomTop = -randomTop;
+            gamma = -gamma;
 
+        ball.style.left = currentLeft + delta + 'px';
+             
+        ball.style.top = currentTop + gamma + 'px';
+    
     switch (random) {
         case 1:
             ball.style.left = currentLeft - delta + 'px';
              
-            ball.style.top = currentTop - randomTop + 'px';
+        ball.style.top = currentTop - gamma + 'px';;
             break;
         case 2:
             ball.style.left = currentLeft + delta + 'px';
-            
-            ball.style.top = currentTop - randomTop + 'px';
+             
+            ball.style.top = currentTop - gamma + 'px';
             break;
         case 3:
             ball.style.left = currentLeft - delta + 'px';
-                
-            ball.style.top = currentTop + randomTop + 'px';
+             
+            ball.style.top = currentTop + gamma + 'px';
             break;
         case 4:
             ball.style.left = currentLeft + delta + 'px';
-                
-            ball.style.top = currentTop + randomTop + 'px';
-            break;
-        
-        default:
+             
+            ball.style.top = currentTop + gamma + 'px';
             break;
     }
     
@@ -244,14 +245,6 @@ function moveBall() {
     }
 }
 
-// function movePlate(playerPosition, key1, key2)
-
-// // position: static, absolute, relative, fixed, sticky
-
-
-
-//var plate1Interval = setInterval(movePlate(player1Platform), 1);
-//var plate2Interval = setInterval(movePlate(player2Platform), 1);
 var ballInterval = setInterval(moveBall, 1);
 
 function getRandom(min, max) {
@@ -268,8 +261,8 @@ function crossObj(obj1, obj2) {
 }
 
 function backToWork() {
-    ball.style.left = browseWidth/2  + 50 + 'px';
-    ball.style.top = browseHeight/2  + 50 + 'px';
+    ball.style.left = browseWidth/2  - 50 + 'px';
+    ball.style.top = browseHeight/2  - 50 + 'px';
     random = getRandom(1,4);
 }
 
