@@ -1,43 +1,54 @@
-const button = document.querySelector('.button');
+// const button = document.querySelector('.button');
 
-const showMessage200 = props => alert(200);
+// const showMessage200 = props => alert(200);
 
-button.addEventListener('click', showMessage200);
+// button.addEventListener('click', showMessage200);
 
-class MovingObject{
-    constructor(x, y, backgroundColor = 'red'){
-        const square = document.createElement('div');
-        square.style.position = 'absolute';
-        square.style.width = '40px';
-        square.style.height = '40px';
-        square.style.backgroundColor = backgroundColor;
+// class MovingObject{
+//     constructor(x, y, backgroundColor = 'red'){
+//         const square = document.createElement('div');
+//         square.style.position = 'absolute';
+//         square.style.width = '40px';
+//         square.style.height = '40px';
+//         square.style.backgroundColor = backgroundColor;
 
-       this.x = x;
-       this.y = y;
-       this.element = square
-    }
-    showObject(){
-        document.querySelector('body').appendChild(this.element);
-        console.log(this.element.style.top)
-        this.element.style.top = this.y + 'px';
-        this.element.style.left = this.x + 'px';
-    }
-};
-
-
-const hereMeOut = ()=>({
-    a: 1,
-    b: 'hello'
-})
-
-const {a:aa, b} = hereMeOut();
+//        this.x = x;
+//        this.y = y;
+//        this.element = square
+//     }
+//     showObject(){
+//         document.querySelector('body').appendChild(this.element);
+//         console.log(this.element.style.top)
+//         this.element.style.top = this.y + 'px';
+//         this.element.style.left = this.x + 'px';
+//     }
+// };
 
 
-const massive = [400, 500, 600, 700, 800];
-const colors = ['blue', 'black', 'gray', 'green', 'gold']
+// const hereMeOut = ()=>({
+//     a: 1,
+//     b: 'hello'
+// })
 
-massive.forEach((item, index) => {
-    const movObj = new MovingObject(item, item, colors[index]);
-    movObj.showObject();
-})
+// const {a:aa, b} = hereMeOut();
 
+
+// const massive = [400, 500, 600, 700, 800];
+// const colors = ['blue', 'black', 'gray', 'green', 'gold']
+
+// massive.forEach((item, index) => {
+//     const movObj = new MovingObject(item, item, colors[index]);
+//     movObj.showObject();
+// })
+
+
+const hello = document.querySelector('.helo')
+
+const bcr = hello.getBoundingClientRect();
+
+console.log('bcr is ', bcr)
+
+// this.top = this.position.y;
+// this.bottom = this.top + this.position.height;
+// this.left = this.position.x;
+// this.right = this.left + this.position.width;

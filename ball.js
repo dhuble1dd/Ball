@@ -15,6 +15,8 @@ let range = 30;
 let random = getRandom(1,4);
 let gamma = 2;
 
+// https://reactjs.org/tutorial/tutorial.html
+
 class DrawObject {
     constructor(element){
         this.element = element;
@@ -27,8 +29,8 @@ class DrawObject {
         this.left = this.position.x;
         this.right = this.left + this.position.width;
 
-        this.currentLeft = parseInt(this.element.style.left  ? this.element.style.left : posLeft);
-        this.currentTop = parseInt(this.element.style.top  ? this.element.style.top : posTop);
+        this.currentLeft = parseInt( posLeft);
+        this.currentTop = parseInt( posTop);
     }
 
     showObject() {
@@ -38,7 +40,7 @@ class DrawObject {
 };
 
 //document.addEventListener('keydown', function(evt){
-//    let currentTop1 = drawPlate(player1Platform);
+//    let currentTop1 = Plate(player1Platform);
 //    let currentTop2 = drawPlate(player2Platform);
 
 //    //const plate1 = new DrawObject(player1Platform);
@@ -69,31 +71,51 @@ function drawPlate(player) {
     const plate = new DrawObject(player);
     let [position, currentTop,,top, bottom] = plate.showObject();
     
-    if (top <= 0) {
-        currentTop = 0 + range;
-    } else if (bottom >= browseHeight) {
-        currentTop = browseHeight - position.height - range;
-    }
+    // if (top <= 0) {
+    //     currentTop = top;
+    // } else if (bottom >= browseHeight) {
+    //     currentTop = browseHeight - position.height - range;
+    // }
 
-    return currentTop;
+    return [position, currentTop,top, bottom];
 }
 
-function movePlate(plate, key1, key2) {
-    document.addEventListener('keydown', function(evt) {
-        cur = drawPlate(plate);
-        if (evt.code === key1) {
-            plate.style.top = cur - range + 'px';
-        }
 
-        if (evt.code === key2) {
-            plate.style.top = cur + range + 'px';
+
+function movePlate(objectsToProcess) {
+    document.addEventListener('keydown', function(evt) {
+        if(objectsToProcess && Array.isArray(objectsToProcess))
+        {
+            const actualPlatform = 
+                objectsToProcess.find((e)=>e.key1 === evt.code || e.key2 === evt.code)
+        
+            if(actualPlatform){
+                const [position, currentTop, top, bottom] = drawPlate(actualPlatform.platform);
+                
+                if (evt.code === actualPlatform.key1) {
+                    if(top <= 0)
+                        return;
+                    actualPlatform.platform.style.top = currentTop - range + 'px';
+                }
+
+                if (evt.code === actualPlatform.key2) {
+                    if(bottom >= browseHeight)
+                        return;
+                    actualPlatform.platform.style.top = currentTop + range + 'px';
+                }
+            }
+            
         }
+        
     });
     return
 }
+const objectsToProcess = [];
+objectsToProcess.push({platform: player1Platform, key1: 'KeyW', key2: 'KeyS' })
+objectsToProcess.push({platform: player2Platform, key1: 'ArrowUp', key2: 'ArrowDown' })
 
-movePlate(player1Platform, 'KeyW', 'KeyS');
-movePlate(player2Platform, 'ArrowUp', 'ArrowDown');
+movePlate(objectsToProcess);
+
 
 //function drawPlate(plate) {
 //   const platePosition = plate.getBoundingClientRect();
@@ -194,7 +216,7 @@ function moveBall() {
         case 1:
             ball.style.left = currentLeft - delta + 'px';
              
-        ball.style.top = currentTop - gamma + 'px';;
+             ball.style.top = currentTop - gamma + 'px';;
             break;
         case 2:
             ball.style.left = currentLeft + delta + 'px';
@@ -210,6 +232,8 @@ function moveBall() {
             ball.style.left = currentLeft + delta + 'px';
              
             ball.style.top = currentTop + gamma + 'px';
+            break;
+        default:
             break;
     }
     

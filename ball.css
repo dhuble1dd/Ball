@@ -20,6 +20,7 @@
     height: 200px;
     background: black;
     top: 50%;
+    transform: translate(0, -50%);
 }
 
 .plate2 {
@@ -29,4 +30,12 @@
     background: black;
     right: 0;
     top: 50%;
+    transform: translate(0, -50%);
 }
+
+.helo{
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    transform: translate(0, 50%);
+  }
