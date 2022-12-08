@@ -5,82 +5,44 @@ const player2Platform = document.querySelector('.plate2')
 const browseWidth = window.innerWidth;
 const browseHeight = window.innerHeight;
 
-const posPlate1 = window.getComputedStyle(player1Platform, Number).top;
-const posPlate2 = window.getComputedStyle(player1Platform, Number).top;
-const posBall = window.getComputedStyle(ball, Number).left;
-const posBallTop = window.getComputedStyle(ball, Number).top;
-
 let delta = 1;
 let range = 30;
 let random = getRandom(1,4);
 let gamma = 2;
 
-// https://reactjs.org/tutorial/tutorial.html
-
-class DrawObject {
+class Object {
     constructor(element){
         this.element = element;
-        const posLeft = window.getComputedStyle(this.element, Number).left;
-        const posTop = window.getComputedStyle(this.element, Number).top;
+        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
+        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
+        
+    }
+
+    showObject() {
         this.position = this.element.getBoundingClientRect();
         
         this.top = this.position.y;
         this.bottom = this.top + this.position.height;
         this.left = this.position.x;
         this.right = this.left + this.position.width;
-
-        this.currentLeft = parseInt( posLeft);
-        this.currentTop = parseInt( posTop);
-    }
-
-    showObject() {
-        return [this.position, this.currentTop, this.currentLeft, this.top, this.bottom, this.left, this.right];
+        return {position: this.position, 
+                currentTop: this.currentTop,
+                currentLeft: this.currentLeft,
+                top: this.top,
+                bottom: this.bottom,
+                left: this.left,
+                right:  this.right};
     }
 
 };
 
-//document.addEventListener('keydown', function(evt){
-//    let currentTop1 = Plate(player1Platform);
-//    let currentTop2 = drawPlate(player2Platform);
-
-//    //const plate1 = new DrawObject(player1Platform);
-//    //let [currentTop1] = plate1.showObject();
-    
-
-//    //const plate2 = new DrawObject(player2Platform);
-//    //let [currentTop2] = plate2.showObject();
-
-//    if(evt.code === 'KeyW'){
-//        player1Platform.style.top = currentTop1 - range + 'px';
-//    }
-
-//    if (evt.code === 'KeyS') {
-//        player1Platform.style.top = currentTop1 + range + 'px';
-//    }
-
-//    if(evt.code === 'ArrowUp'){
-//        player2Platform.style.top = currentTop2 - range + 'px';
-//    }
-
-//    if (evt.code === 'ArrowDown') {
-//        player2Platform.style.top = currentTop2 + range + 'px';
-//    }
-//});
 
 function drawPlate(player) {
-    const plate = new DrawObject(player);
-    let [position, currentTop,,top, bottom] = plate.showObject();
-    
-    // if (top <= 0) {
-    //     currentTop = top;
-    // } else if (bottom >= browseHeight) {
-    //     currentTop = browseHeight - position.height - range;
-    // }
+    const plate = new Object(player);
+    let {currentTop,top, bottom} = plate.showObject();
 
-    return [position, currentTop,top, bottom];
+    return [currentTop,top, bottom];
 }
-
-
 
 function movePlate(objectsToProcess) {
     document.addEventListener('keydown', function(evt) {
@@ -90,18 +52,19 @@ function movePlate(objectsToProcess) {
                 objectsToProcess.find((e)=>e.key1 === evt.code || e.key2 === evt.code)
         
             if(actualPlatform){
-                const [position, currentTop, top, bottom] = drawPlate(actualPlatform.platform);
+                const {platform, key1, key2} = actualPlatform;
+                const [currentTop, top, bottom] = drawPlate(platform);
                 
-                if (evt.code === actualPlatform.key1) {
+                if (evt.code === key1) {
                     if(top <= 0)
                         return;
-                    actualPlatform.platform.style.top = currentTop - range + 'px';
+                    platform.style.top = currentTop - range + 'px';
                 }
 
-                if (evt.code === actualPlatform.key2) {
+                if (evt.code === key2) {
                     if(bottom >= browseHeight)
                         return;
-                    actualPlatform.platform.style.top = currentTop + range + 'px';
+                    platform.style.top = currentTop + range + 'px';
                 }
             }
             
@@ -111,36 +74,24 @@ function movePlate(objectsToProcess) {
     return
 }
 const objectsToProcess = [];
-objectsToProcess.push({platform: player1Platform, key1: 'KeyW', key2: 'KeyS' })
-objectsToProcess.push({platform: player2Platform, key1: 'ArrowUp', key2: 'ArrowDown' })
+objectsToProcess.push({platform: player1Platform, key1: 'KeyW', key2: 'KeyS'})
+objectsToProcess.push({platform: player2Platform, key1: 'ArrowUp', key2: 'ArrowDown'})
 
 movePlate(objectsToProcess);
 
-
-//function drawPlate(plate) {
-//   const platePosition = plate.getBoundingClientRect();
-//   const posPlate = window.getComputedStyle(plate, Number).top;
-//   let topPlatePosition = platePosition.y;
-//   let botPlatePosition = topPlatePosition + platePosition.height;
-//   let currentTop = parseInt(plate.style.top  ? plate.style.top : posPlate);
-////   if (topPlatePosition < 0 || botPlatePosition >= browseHeight) {
-////    return;
-////   }
-//    if (topPlatePosition <= 0) {
-//        currentTop = 0 + range;
-//    } else if (botPlatePosition >= browseHeight)
-//            currentTop = browseHeight - platePosition.height - range;
-
-//   return currentTop;
-//}
-
 function drawBall() {
-    const ball0 = new DrawObject(ball);
-    let [ballPosition, currentTop, currentLeft, ballTop, ballBottom, ballLeft, ballRight] = ball0.showObject();
-    const plate1 = new DrawObject(player1Platform);
-    let [plate1Position,,, plate1Top,, plate1Left] = plate1.showObject();
-    const plate2 = new DrawObject(player2Platform);
-    let [plate2Position,,, plate2Top,, plate2Left] = plate2.showObject();
+    const ball0 = new Object(ball);
+    const plate1 = new Object(player1Platform);
+    const plate2 = new Object(player2Platform);
+
+    const {position: ballPosition,
+        currentTop, currentLeft,
+        top: ballTop,
+        bottom: ballBottom,
+        left: ballLeft,
+        right: ballRight} = ball0.showObject();
+    const {position: plate1Position, top: plate1Top, left: plate1Left} = plate1.showObject();
+    const {position: plate2Position, top: plate2Top, left: plate2Left} = plate2.showObject();
 
     circle = {
         x : ballLeft,
@@ -167,40 +118,8 @@ function drawBall() {
 }
 
 function moveBall() {
-    //const ballPosition = ball.getBoundingClientRect();
-    //let leftBallPosition = ballPosition.x;
-    //let rightBallPosition = ballPosition.x + ballPosition.width;
-    //let topBallPosition = ballPosition.y;
-    //let botBallPosition = ballPosition.y + ballPosition.height;
-   
-    //const player1PlatformPosition = player1Platform.getBoundingClientRect();
-    //const player2PlatformPosition = player2Platform.getBoundingClientRect();
-
     
-    //ring = {
-    //    x : leftBallPosition, 
-    //    y : topBallPosition,
-    //    w : ballPosition.width,
-    //    h : ballPosition.height 
-    //}
-   
-    //platform1 = {
-    //    x : player1PlatformPosition.x, 
-    //    y : player1PlatformPosition.y, 
-    //    w : player1PlatformPosition.width,
-    //    h : player1PlatformPosition.height
-    //}
-   
-    //platform2 = {
-    //    x : player2PlatformPosition.x, 
-    //    y : player2PlatformPosition.y, 
-    //    w : player2PlatformPosition.width,
-    //    h : player2PlatformPosition.height 
-    //}
-    //const currentLeft = parseInt(ball.style.left  ? ball.style.left : posBall);
-    //const currentTop = parseInt(ball.style.top  ? ball.style.top : posBallTop);
-
-    let {currentTop, currentLeft, circle, platform1, platform2, ballTop, ballBottom, ballLeft, ballRight} = drawBall();
+    const {currentTop, currentLeft, circle, platform1, platform2, ballTop, ballBottom, ballLeft, ballRight} = drawBall();
 
     if (crossObj(circle, platform1) || crossObj(circle, platform2)) 
                 delta = -delta;
@@ -237,33 +156,6 @@ function moveBall() {
             break;
     }
     
-    //if (random === 2 || random === 4) {
-    //    ball.style.left = currentLeft + delta + 'px';
-    //    if (crossObj(ring, platform1) || crossObj(ring, platform2)) 
-    //        delta = -delta;
-                
-    
-    //    ball.style.left = currentLeft + delta + 'px';
-       
-    //} else {
-    //    ball.style.left = currentLeft - delta + 'px';
-    //    if (crossObj(ring, platform1) || crossObj(ring, platform2)) 
-    //             delta = -delta; 
-    //     ball.style.left = currentLeft - delta + 'px';
-    //}
-
-    //if (random === 1 || random === 2) {
-    //    if (topBallPosition < 0 || botBallPosition >= browseHeight ) 
-    //        randomTop = -randomTop;
-   
-   
-    //    ball.style.top = currentTop - randomTop + 'px';
-    //} else {if (topBallPosition < 0 || botBallPosition >= browseHeight ) 
-    //            randomTop = -randomTop;
-
-    //    ball.style.top = currentTop + randomTop + 'px';
-    //}
-   
     if (ballLeft < 0 || ballRight > browseWidth ) {
         backToWork();
     }
