@@ -12,13 +12,12 @@ let gamma = 2;
 
 class Object {
     constructor(element){
-        this.element = element;
-        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
-        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
-        
+        this.element = element;       
     }
 
     showObject() {
+        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
+        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
         this.position = this.element.getBoundingClientRect();
         
         this.top = this.position.y;
@@ -35,13 +34,29 @@ class Object {
     }
 
 };
+//let ball0 = new Object(ball);
+//let plate1 = new Object(player1Platform);
+//let plate2 = new Object(player2Platform);
+//function drawObject(obj) {
+//    let objParam;
+//    if (obj === ball) {
+//        objParam = ball0.showObject();
+//    } else if (obj === player1Platform) {
+//        objParam = plate1.showObject();
+//    } else if (obj === player2Platform) {
+//        objParam = plate2.showObject();
+//    }
 
+    
+
+//    return objParam;
+//}
 
 function drawPlate(player) {
     const plate = new Object(player);
     let {currentTop,top, bottom} = plate.showObject();
 
-    return [currentTop,top, bottom];
+    return {currentTop,top, bottom};
 }
 
 function movePlate(objectsToProcess) {
@@ -53,7 +68,7 @@ function movePlate(objectsToProcess) {
         
             if(actualPlatform){
                 const {platform, key1, key2} = actualPlatform;
-                const [currentTop, top, bottom] = drawPlate(platform);
+                const {currentTop, top, bottom} = drawPlate(platform);
                 
                 if (evt.code === key1) {
                     if(top <= 0)
