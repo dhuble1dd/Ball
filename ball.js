@@ -10,12 +10,16 @@ let range = 30;
 let random = getRandom(1,4);
 let gamma = 2;
 
+let platform1 ={};
+let platform2 = {};
+//let circle = {};
+
 class Object {
     constructor(element){
         this.element = element; 
-        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
-        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
-        this.position = this.element.getBoundingClientRect();   
+        //this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
+        //this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
+        //this.position = this.element.getBoundingClientRect();   
         //this.top = this.position.y;
         //this.bottom = this.top + this.position.height;
         //this.left = this.position.x;
@@ -35,12 +39,30 @@ class Object {
         //    right:  this.right};
     }
 
+    drawObject() {
+        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
+        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
+        this.position = this.element.getBoundingClientRect(); 
+        this.top = this.position.y;
+        this.left = this.position.x;
+        this.width = this.position.width;
+        this.height = this.position.height;
+
+        return {
+            currentTop: this.currentTop,
+            currentLeft: this.currentLeft,
+            top: this.top,
+            left: this.left,
+            width: this.width,
+            height: this.height,
+        }
+    }
+
     movePlate() {
+        const {top, left, width, height} = this.drawObject();
         document.addEventListener('keydown', (evt) => {
-            this.position = this.element.getBoundingClientRect();
-            this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top); 
-            this.top = this.position.y;
-            this.bottom = this.top + this.position.height;
+           this.drawObject();
+           this.bottom = this.top + this. height;
             switch (this.element) {
                 case player1Platform:
                     this.key1 = 'KeyW';
@@ -66,104 +88,92 @@ class Object {
                 this.element.style.top = this.currentTop + range + 'px';
             } 
         });   
-        return {x: this.position.x, y: this.position.y, w: this.position.width, h: this.position.height}; 
+        return {x: top, y: left, w: width, h: height}; 
     }
 
-    drawBall() {
-        this.currentLeft = parseInt(window.getComputedStyle(this.element, Number).left);
-        this.currentTop = parseInt(window.getComputedStyle(this.element, Number).top);
-        this.position = this.element.getBoundingClientRect();   
-        this.top = this.position.y;
-        this.bottom = this.top + this.position.height;
-        this.left = this.position.x;
-        this.right = this.left + this.position.width; 
-        //const {x: left1, y: top1, w: width1, h: height1} = this.movePlate(player1Platform);
-        //const {x: left2, y: top2, w: width2, h: height2} = this.movePlate(player2Platform);
 
-        this.circle = {
-            x : this.left,
-            y : this.top,
-            w : this.position.width,
-            h : this.position.height,
-        }
-    
-    //    this.platform1 = {
-    //        x : left1,
-    //        y : top1,
-    //        w : width1,
-    //        h : height1,
-    //    }
-    
-    //    this.platform2 = {
-    //        x : left2,
-    //        y : top2,
-    //        w : width2,
-    //        h : height2,
-    //    }
+    moveBall(){
+        this.platform1 = plate1.movePlate();
+        this.platform2 = plate2.movePlate();
+        console.log(this.platform1)
+        setInterval(() => {
+            const {currentTop, currentLeft, top: ballTop, left: ballLeft, width, height} = this.drawObject();
+            
+            this.circle = {
+                x: ballLeft,
+                y: ballTop,
+                w: width,
+                h: height,
+            }
+            
 
-        return{
-            currentTop: this.currentTop,
-            currentLeft: this.currentLeft,
-            circle: this.circle,
-            //platform1: this.platform1,
-            //platform2: this.platform2,
-            ballTop:this.top, 
-            ballBottom: this.bottom, 
-            ballLeft: this.left, 
-            ballRight: this.right
-        }
+            const ballBottom = ballTop + height;
+            const ballRight = ballLeft +  width;
+
+
+            if ((this.circle.x < this.platform1.x + this.platform1.w &&
+                this.circle.x + this.circle.w > this.platform1.x &&
+                this.circle.y < this.platform1.y + this.platform1.h &&
+                this.circle.y + this.circle.h > this.platform1.y)  
+                || 
+                (this.circle.x < this.platform2.x + this.platform2.w &&
+                this.circle.x + this.circle.w > this.platform2.x &&
+                this.circle.y < this.platform2.y + this.platform2.h &&
+                this.circle.y + this.circle.h > this.platform2.y)) 
+                    delta = -delta;
+
+        
+
+            if (ballTop < 0 || ballBottom >= browseHeight ) 
+                    gamma = -gamma;
+
+                this.element.style.left = currentLeft + delta + 'px';
+             
+                this.element.style.top = currentTop + gamma + 'px';
+    
+            switch (random) {
+                case 1:
+                    this.element.style.left = currentLeft - delta + 'px';
+                
+                    this.element.style.top = currentTop - gamma + 'px';;
+                    break;
+                case 2:
+                    this.element.style.left = currentLeft + delta + 'px';
+
+                    this.element.style.top = currentTop - gamma + 'px';
+                    break;
+                case 3:
+                    this.element.style.left = currentLeft - delta + 'px';
+             
+                    this.element.style.top = currentTop + gamma + 'px';
+                    break;
+                case 4:
+                    this.element.style.left = currentLeft + delta + 'px';
+             
+                    this.element.style.top = currentTop + gamma + 'px';
+                    break;
+                default:
+                    break;
+            }
+    
+            if (ballLeft < 0 || ballRight > browseWidth ) {
+                backToWork();
+            }
+        }, 1);
+
     }
-
-    //moveBall(){
-    //    const {currentTop, currentLeft, circle, platform1, platform2, ballTop, ballBottom, ballLeft, ballRight} = this.drawBall();
-    //    if (crossObj(circle, platform1) || crossObj(circle, platform2)) 
-    //            delta = -delta;
-
-    //    if (ballTop < 0 || ballBottom >= browseHeight ) 
-    //            gamma = -gamma;
-
-    //        ball.style.left = currentLeft + delta + 'px';
-             
-    //        ball.style.top = currentTop + gamma + 'px';
-    
-    //    switch (random) {
-    //        case 1:
-    //            ball.style.left = currentLeft - delta + 'px';
-             
-    //            ball.style.top = currentTop - gamma + 'px';;
-    //            break;
-    //        case 2:
-    //            ball.style.left = currentLeft + delta + 'px';
-
-    //            ball.style.top = currentTop - gamma + 'px';
-    //            break;
-    //        case 3:
-    //            ball.style.left = currentLeft - delta + 'px';
-             
-    //            ball.style.top = currentTop + gamma + 'px';
-    //            break;
-    //        case 4:
-    //            ball.style.left = currentLeft + delta + 'px';
-             
-    //            ball.style.top = currentTop + gamma + 'px';
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    
-    //    if (ballLeft < 0 || ballRight > browseWidth ) {
-    //        backToWork();
-    //    }
-    //}
 };
 
 const plate1 = new Object(player1Platform);
 const plate2 = new Object(player2Platform);
 const ball0 = new Object(ball);
 
-const platform1 = plate1.movePlate();
-const platform2 = plate2.movePlate();
-console.log(platform1, platform2);
+//platform1 = plate1.movePlate();
+//platform2 = plate2.movePlate();
+ball0.moveBall()
+
+//console.log(platform1, platform2, circle);
+
 //plate1.movePlate();
 //plate2.movePlate();
 
@@ -263,51 +273,65 @@ console.log(platform1, platform2);
 //    return{currentTop, currentLeft, circle, platform1, platform2, ballTop, ballBottom, ballLeft, ballRight}
 //}
 
-function moveBall() {
+//function moveBall() {
     
-    const {currentTop, currentLeft, circle, ballTop, ballBottom, ballLeft, ballRight} = ball0.drawBall();
-    
-    if (crossObj(circle, platform1) || crossObj(circle, platform2)) 
-                delta = -delta;
+//    const {currentTop, currentLeft, top, left, width, height} = ball0.drawObject();
+//    const platform1 = plate1.movePlate();
+//    const platform2 = plate2.movePlate();
 
-    if (ballTop < 0 || ballBottom >= browseHeight ) 
-            gamma = -gamma;
+//    const bottom = top + height;
+//    const right = left + width;
 
-        ball.style.left = currentLeft + delta + 'px';
-             
-        ball.style.top = currentTop + gamma + 'px';
-    
-    switch (random) {
-        case 1:
-            ball.style.left = currentLeft - delta + 'px';
-             
-             ball.style.top = currentTop - gamma + 'px';;
-            break;
-        case 2:
-            ball.style.left = currentLeft + delta + 'px';
-             
-            ball.style.top = currentTop - gamma + 'px';
-            break;
-        case 3:
-            ball.style.left = currentLeft - delta + 'px';
-             
-            ball.style.top = currentTop + gamma + 'px';
-            break;
-        case 4:
-            ball.style.left = currentLeft + delta + 'px';
-             
-            ball.style.top = currentTop + gamma + 'px';
-            break;
-        default:
-            break;
-    }
-    
-    if (ballLeft < 0 || ballRight > browseWidth ) {
-        backToWork();
-    }
-}
+//    console.log(platform1, platform2)
 
-var ballInterval = setInterval(moveBall, 1);
+//    circle = {
+//        x: left,
+//        y: top,
+//        w: width,
+//        h: height,
+//    }
+    
+//    if (crossObj(circle, platform1) || crossObj(circle, platform2)) 
+//                delta = -delta;
+
+//    if (top < 0 || bottom >= browseHeight ) 
+//            gamma = -gamma;
+
+//        ball.style.left = currentLeft + delta + 'px';
+             
+//        ball.style.top = currentTop + gamma + 'px';
+    
+//    switch (random) {
+//        case 1:
+//            ball.style.left = currentLeft - delta + 'px';
+             
+//             ball.style.top = currentTop - gamma + 'px';;
+//            break;
+//        case 2:
+//            ball.style.left = currentLeft + delta + 'px';
+             
+//            ball.style.top = currentTop - gamma + 'px';
+//            break;
+//        case 3:
+//            ball.style.left = currentLeft - delta + 'px';
+             
+//            ball.style.top = currentTop + gamma + 'px';
+//            break;
+//        case 4:
+//            ball.style.left = currentLeft + delta + 'px';
+             
+//            ball.style.top = currentTop + gamma + 'px';
+//            break;
+//        default:
+//            break;
+//    }
+    
+//    if (left < 0 || right > browseWidth ) {
+//        backToWork();
+//    }
+//}
+
+//var ballInterval = setInterval(move(), 1);
 
 function getRandom(min, max) {
     min = Math.ceil(min);
@@ -315,12 +339,12 @@ function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function crossObj(obj1, obj2) {
-    return obj1.x < obj2.x + obj2.w &&
-           obj1.x + obj1.w > obj2.x &&
-           obj1.y < obj2.y + obj2.h &&
-           obj1.y + obj1.h > obj2.y;
-}
+//function crossObj(obj1, obj2) {
+//    return obj1.x < obj2.x + obj2.w &&
+//           obj1.x + obj1.w > obj2.x &&
+//           obj1.y < obj2.y + obj2.h &&
+//           obj1.y + obj1.h > obj2.y;
+//}
 
 function backToWork() {
     ball.style.left = browseWidth/2  - 50 + 'px';
